@@ -12,15 +12,21 @@
 			main {
 				height: 100%;
 				display: flex;
+				flex-direction: column;
 				flex-wrap: wrap;
 				justify-content: center;
 				align-items: center;
+				gap: 20px;
 			}
 
 			form {
 				display: flex;
 				flex-direction: column;
 				gap: 10px;
+			}
+
+			#platformInfoBox {
+				max-width: 500px;
 			}
 		</style>
 	</head>
@@ -37,6 +43,7 @@
 				</label>
 				<button>Download</button>
 			</form>
+			<aside id="platformInfoBox"></aside>
 		</main>
 		<script type="module">
 			const platformsResponse = await fetch("./platforms");
@@ -62,6 +69,18 @@
 			} catch {
 				// Probably an unsupported browser
 			}
+
+			function updatePlatformInfo() {
+				const platform = platformSelect.value
+				if (platform == "macIntel" || platform == "macArm") {
+					platformInfoBox.textContent = "Mac builds can't be run by double clicking the downloaded app. You need to run `./Chromium.app/Contents/MacOS/Chromium` from the command line for it to work.";
+				} else {
+					platformInfoBox.textContent = "";
+				}
+			}
+			platformSelect.addEventListener("change", updatePlatformInfo);
+			platformSelect.addEventListener("input", updatePlatformInfo);
+			updatePlatformInfo();
 		</script>
 	</body>
 </html>
