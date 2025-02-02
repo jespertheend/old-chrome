@@ -41,9 +41,10 @@
 		<script type="module">
 			const platformsResponse = await fetch("./platforms");
 			const platforms = await platformsResponse.json();
-			for (const platform of platforms) {
+			for (const [platform, platformConfig] of Object.entries(platforms)) {
 				const el = document.createElement("option");
-				el.textContent = platform;
+				el.value = platform;
+				el.textContent = platformConfig.displayName;
 				platformSelect.append(el);
 			}
 
@@ -51,16 +52,12 @@
 				const userAgentData = await navigator.userAgentData.getHighEntropyValues(["architecture", "platform"]);
 				if (userAgentData.platform == "macOS") {
 					if (userAgentData.architecture == "x86") {
-						platformSelect.value = "MAC";
+						platformSelect.value = "macIntel";
 					} else {
-						platformSelect.value = "MAC_ARM64";
+						platformSelect.value = "macArm";
 					}
 				} else if (userAgentData.platform == "Windows") {
-					if (userAgentData.architecture == "arm") {
-						platformSelect.value = "WIN_ARM64";
-					} else {
-						platformSelect.value = "WIN";
-					}
+					platformSelect.value = "windows";
 				}
 			} catch {
 				// Probably an unsupported browser
