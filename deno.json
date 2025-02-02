@@ -1,0 +1,10 @@
+{
+	"tasks": {
+		"dev": "deno run --watch --inspect --allow-net --allow-read main.ts"
+	},
+	"fmt": {
+		"indentWidth": 4,
+		"useTabs": true,
+		"lineWidth": 300
+	}
+}
