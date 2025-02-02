@@ -8,13 +8,63 @@
 				margin: 0;
 				font-family: ui-sans-serif, system-ui, sans-serif;
 			}
+
+			main {
+				height: 100%;
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: center;
+				align-items: center;
+			}
+
+			form {
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+			}
 		</style>
 	</head>
 	<body>
-		<form>
-			<label for="platform">Platform</label>
-			<select name="platform">
-			</select>
-		</form>
+		<main>
+			<form action="./download">
+				<label for="platform">Platform
+					<select id="platformSelect" name="platform">
+						<option disabled selected value="">-- pick one --</option>
+					</select>
+				</label>
+				<label for="version">Milestone or exact version
+					<input name="version" placeholder="M134" required>
+				</label>
+				<button>Download</button>
+			</form>
+		</main>
+		<script type="module">
+			const platformsResponse = await fetch("./platforms");
+			const platforms = await platformsResponse.json();
+			for (const platform of platforms) {
+				const el = document.createElement("option");
+				el.textContent = platform;
+				platformSelect.append(el);
+			}
+
+			try {
+				const userAgentData = await navigator.userAgentData.getHighEntropyValues(["architecture", "platform"]);
+				if (userAgentData.platform == "macOS") {
+					if (userAgentData.architecture == "x86") {
+						platformSelect.value = "MAC";
+					} else {
+						platformSelect.value = "MAC_ARM64";
+					}
+				} else if (userAgentData.platform == "Windows") {
+					if (userAgentData.architecture == "arm") {
+						platformSelect.value = "WIN_ARM64";
+					} else {
+						platformSelect.value = "WIN";
+					}
+				}
+			} catch {
+				// Probably an unsupported browser
+			}
+		</script>
 	</body>
 </html>
